@@ -1,0 +1,5 @@
+apples                              5.97
+  1.99 * 3.000
+3 for 2 (apples)                   -1.99
+
+Total:                              3.98

@@ -1,0 +1,4 @@
+apples                              1.99
+10.0% off (apples)                 -0.20
+
+Total:                              1.79
