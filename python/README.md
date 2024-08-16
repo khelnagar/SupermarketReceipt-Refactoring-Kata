@@ -15,6 +15,12 @@ On the command line, enter the `SupermarketReceipt-Refactoring-Kata/python` dire
 pytest
 ```
 
+To run tests for test coverage calculation, on the command line, enter the `SupermarketReceipt-Refactoring-Kata/python` directory and run
+
+```
+coverage run -m pytest
+coverage report -m
+```
 ## Optional: Running [TextTest](https://www.texttest.org/) Tests
 
 Install TextTest according to the [instructions](https://www.texttest.org/index.html#getting-started-with-texttest) (platform specific).

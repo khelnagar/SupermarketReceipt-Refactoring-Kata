@@ -12,4 +12,3 @@ class FakeCatalog(SupermarketCatalog):
 
     def unit_price(self, product):
         return self.prices[product.name]
-

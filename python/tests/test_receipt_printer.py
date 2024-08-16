@@ -7,37 +7,56 @@ from receipt import Receipt
 from receipt_printer import ReceiptPrinter
 
 
-
 class ReceiptPrinterTest(unittest.TestCase):
     def setUp(self):
         self.toothbrush = Product("toothbrush", ProductUnit.EACH)
         self.apples = Product("apples", ProductUnit.KILO)
         self.receipt = Receipt()
+        self.printer = ReceiptPrinter()
 
-    def test_one_line_item(self):
-        self.receipt.add_product(self.toothbrush, 1, 0.99, 0.99)
-        verify(ReceiptPrinter().print_receipt(self.receipt))
+        self.toothbrush_price = 0.99
+        self.apples_price = 1.99
 
-    def test_quantity_two(self):
-        self.receipt.add_product(self.toothbrush, 2, 0.99, 0.99 * 2)
-        verify(ReceiptPrinter().print_receipt(self.receipt))
+    def test_one_item(self):
+        self.receipt.add_product(self.toothbrush, 1, self.toothbrush_price, self.toothbrush_price)
+        verify(self.printer.print_receipt(self.receipt))
 
-    def test_loose_weight(self):
-        self.receipt.add_product(self.apples, 2.3, 1.99, 1.99 * 2.3)
-        verify(ReceiptPrinter().print_receipt(self.receipt))
+    def test_two_items_same(self):
+        self.receipt.add_product(self.toothbrush, 2, self.toothbrush_price, 2 * self.toothbrush_price)
+        verify(self.printer.print_receipt(self.receipt))
 
-    def test_total(self):
-        self.receipt.add_product(self.toothbrush, 1, 0.99, 0.99 * 2)
-        self.receipt.add_product(self.apples, 0.75, 1.99, 1.99 * 0.75)
-        verify(ReceiptPrinter().print_receipt(self.receipt))
+    def test_fraction_kilo(self):
+        self.receipt.add_product(self.apples, 0.75, self.apples_price, 0.75 * self.apples_price)
+        verify(self.printer.print_receipt(self.receipt))
 
-    def test_discounts(self):
-        self.receipt.add_discount(Discount(self.apples, "3 for 2", -0.99))
-        verify(ReceiptPrinter().print_receipt(self.receipt))
+    def test_multiple_items(self):
+        self.receipt.add_product(self.toothbrush, 2, self.toothbrush_price, 2 * self.toothbrush_price)
+        self.receipt.add_product(self.apples, 0.75, self.apples_price, 0.75 * self.apples_price)
+        verify(self.printer.print_receipt(self.receipt))
 
-    def test_whole_receipt(self):
-        self.receipt.add_product(self.toothbrush, 1, 0.99, 0.99)
-        self.receipt.add_product(self.toothbrush, 2, 0.99, 0.99*2)
-        self.receipt.add_product(self.apples, 0.75, 1.99, 1.99 * 0.75)
-        self.receipt.add_discount(Discount(self.apples, "3 for 2", -0.99))
-        verify(ReceiptPrinter().print_receipt(self.receipt))
+    def test_discount_three_for_two(self):
+        self.receipt.add_product(self.apples, 3, self.apples_price, 3 * self.apples_price)
+        self.receipt.add_discount(Discount(self.apples, "3 for 2", -1.99))
+        verify(self.printer.print_receipt(self.receipt))
+
+    def test_discount_ten_percent(self):
+        self.receipt.add_product(self.apples, 1, self.apples_price, self.apples_price)
+        self.receipt.add_discount(Discount(self.apples, "10.0% off", -0.20))
+        verify(self.printer.print_receipt(self.receipt))
+
+    def test_discount_two_for_amount(self):
+        self.receipt.add_product(self.apples, 2, self.apples_price, 3.98)
+        self.receipt.add_discount(Discount(self.apples, "2 for 3.49", -0.49))
+        verify(self.printer.print_receipt(self.receipt))
+
+    def test_discount_five_for_amount(self):
+        self.receipt.add_product(self.apples, 5, self.apples_price, 9.95)
+        self.receipt.add_discount(Discount(self.apples, "5 for 9.0", -0.95))
+        verify(self.printer.print_receipt(self.receipt))
+
+    def test_multiple_discounts(self):
+        self.receipt.add_product(self.toothbrush, 3, self.toothbrush_price, 3 * self.toothbrush_price)
+        self.receipt.add_product(self.apples, 0.75, self.apples_price, 0.75 * self.apples_price)
+        self.receipt.add_discount(Discount(self.toothbrush, "3 for 2", -0.99))
+        self.receipt.add_discount(Discount(self.apples, "10.0% off", -0.15))
+        verify(self.printer.print_receipt(self.receipt))
