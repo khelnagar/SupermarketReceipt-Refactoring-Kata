@@ -35,6 +35,9 @@ class ReceiptPrinterTest(unittest.TestCase):
         verify(self.printer.print_receipt(self.receipt))
 
     def test_discount_three_for_two(self):
+        # We're adding the product and discount directly on the receipt and not through the cart/checkout process.
+        # This is to test the printer in isolation, otherwise, a change of how cart displays discount for example would
+        # break the printer tests but in fact, the printer works properly (does what it has to do)
         self.receipt.add_product(self.apples, 3, self.apples_price, 3 * self.apples_price)
         self.receipt.add_discount(Discount(self.apples, "3 for 2", -1.99))
         verify(self.printer.print_receipt(self.receipt))
